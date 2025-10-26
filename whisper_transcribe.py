@@ -21,13 +21,13 @@ Hinweise:
 """
 
 import argparse
-from pathlib import Path
 import subprocess
+from pathlib import Path
+
 import numpy as np
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from transformers.pipelines.base import PipelineException
-
 
 ###############################################################################
 # Audio-Dekodierung via ffmpeg
@@ -43,13 +43,19 @@ def ffmpeg_decode_to_mono_16k_float32(audio_path: Path) -> tuple[np.ndarray, int
     """
     cmd = [
         "ffmpeg",
-        "-v", "error",          # nur Fehler ausgeben
-        "-i", str(audio_path),  # Eingabedatei
-        "-f", "f32le",          # rohes 32-bit float little-endian
-        "-acodec", "pcm_f32le", # zwinge PCM Float32
-        "-ac", "1",             # Mono
-        "-ar", "16000",         # 16 kHz
-        "pipe:1",               # schreibe rohe Samples nach stdout
+        "-v",
+        "error",  # nur Fehler ausgeben
+        "-i",
+        str(audio_path),  # Eingabedatei
+        "-f",
+        "f32le",  # rohes 32-bit float little-endian
+        "-acodec",
+        "pcm_f32le",  # zwinge PCM Float32
+        "-ac",
+        "1",  # Mono
+        "-ar",
+        "16000",  # 16 kHz
+        "pipe:1",  # schreibe rohe Samples nach stdout
     ]
 
     try:
@@ -142,11 +148,11 @@ def build_asr_pipeline(model_id: str, device: str, language_code: str = "de"):
     """
     if device.startswith("cuda"):
         model_dtype = torch.float16
-        batch_size = 8    # kleiner halten für weniger VRAM
+        batch_size = 8  # kleiner halten für weniger VRAM
         chunk_length_s = 20
     else:
         model_dtype = torch.float32
-        batch_size = 1    # CPU braucht kleine Batches
+        batch_size = 1  # CPU braucht kleine Batches
         chunk_length_s = 20
 
     # Modell laden
@@ -162,7 +168,7 @@ def build_asr_pipeline(model_id: str, device: str, language_code: str = "de"):
 
     generate_kwargs = {
         "language": language_code,  # "de"
-        "task": "transcribe",       # gleiche Sprache behalten
+        "task": "transcribe",  # gleiche Sprache behalten
     }
 
     asr_pipe = pipeline(
