@@ -4,7 +4,7 @@ set -euo pipefail
 # --- config ---
 VENV_DIR=".venv"
 REQ_FILE="requirements.txt"
-SCRIPT="distil_whisper_transcribe.py"
+SCRIPT="whisper_transcribe.py"
 
 # We need at least one argument: the audio file.
 if [ $# -lt 1 ]; then
